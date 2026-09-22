@@ -1,0 +1,47 @@
+[project]
+name = "adlex"
+version = "0.1.0"
+description = "Агентный сервис нормоконтроля рекламных материалов"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi", "uvicorn[standard]", "pydantic>=2.7", "pydantic-settings",
+  "sqlalchemy[asyncio]>=2.0", "asyncpg", "alembic", "pgvector",
+  "httpx", "openai", "redis", "arq", "structlog", "sse-starlette",
+  "tenacity", "pyyaml",
+]
+
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "pytest-cov", "mypy", "ruff", "respx"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/adlex"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "S", "C4", "SIM", "RUF"]
+# RUF001-003 ищут «похожие на латиницу» символы — защита от подмены букв в коде.
+# Комментарии и docstring в проекте русские, поэтому правило даёт только шум.
+ignore = ["RUF001", "RUF002", "RUF003"]
+
+[tool.ruff.lint.per-file-ignores]
+# S101 — «не используй assert»: правило про боевой код, в тестах assert уместен.
+"tests/**" = ["S101"]
+# Миграции — машинный код Alembic. Переписывать его под линтер бессмысленно:
+# следующая автогенерация всё равно сгенерирует длинные строки.
+"alembic/versions/**" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+markers = ["integration: требует поднятых контейнеров", "evals: платные прогоны LLM"]

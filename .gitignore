@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.idea/
+models.json
+body.json
+# личные заметки и учебные материалы — в публичный репозиторий не идут
+*.local.md
+CLAUDE.md
+docs/practicum.html

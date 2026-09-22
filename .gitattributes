@@ -1,0 +1,8 @@
+# Единый перевод строк во всём репозитории: LF, как в .editorconfig.
+# Без этого Windows положит в индекс CRLF, и в Linux-контейнере ломаются
+# shell-скрипты, а diff превращается в «изменён весь файл».
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.pdf binary

@@ -1,0 +1,28 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Установка зависимостей
+        run: uv sync --all-groups
+
+      - name: Линтер
+        run: uv run ruff check .
+
+      - name: Форматирование
+        run: uv run ruff format --check .
+
+      - name: Типы
+        run: uv run mypy src
+
+      - name: Тесты
+        run: uv run pytest -q -m "not integration and not evals" --cov=src

@@ -1,0 +1,43 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: adlex
+      POSTGRES_PASSWORD: adlex
+      POSTGRES_DB: adlex
+    ports: ["5432:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adlex"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file: [.env]
+    environment:
+      # Внутри сети compose хосты — имена сервисов, а не localhost.
+      ADLEX_DATABASE_URL: postgresql+asyncpg://adlex:adlex@db:5432/adlex
+      ADLEX_REDIS_URL: redis://redis:6379/0
+      # Прокси до OpenRouter живёт на хосте, из контейнера он виден так.
+      ADLEX_LLM_PROXY: http://host.docker.internal:10809
+      ADLEX_ENV: docker
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["8000:8000"]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+volumes:
+  pgdata: {}

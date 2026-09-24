@@ -1,0 +1,24 @@
+# Что не нужно отправлять демону Docker при сборке.
+# Без этого файла в контекст уезжают .venv, .git и корпус — сборка медленнее,
+# а случайно скопированный .env оказался бы внутри образа.
+
+.venv/
+.git/
+.github/
+.idea/
+__pycache__/
+*.py[cod]
+
+.env
+models.json
+*.local.md
+
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+corpus/raw/
+docs/
+notebooks/
+tests/
+k8s/

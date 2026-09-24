@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: adlex-migrate
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+        # Ждём базу: при первом apply всё создаётся одновременно.
+        - name: wait-for-db
+          image: pgvector/pgvector:pg16
+          command: ["sh", "-c", "until pg_isready -h postgres -p 5432; do echo waiting for postgres; sleep 2; done"]
+      containers:
+        - name: migrate
+          image: adlex:0.1.0
+          imagePullPolicy: IfNotPresent
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - configMapRef: {name: adlex-config}
+            - secretRef:    {name: adlex-secrets}

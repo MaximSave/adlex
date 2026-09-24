@@ -36,6 +36,27 @@ curl localhost:8000/readyz    # {"db":"ok","redis":"ok"} — зависимос�
 docker compose up -d --build
 ```
 
+## Запуск в Kubernetes (k3d)
+
+Локальный кластер: API, миграции отдельным Job, PostgreSQL (StatefulSet) и Redis.
+Манифесты — в `k8s/`, раскладка base/overlays под Kustomize.
+
+```bash
+k3d cluster create adlex -p "8080:80@loadbalancer" --agents 1
+docker build -t adlex:0.1.0 -f docker/Dockerfile .
+k3d image import adlex:0.1.0 -c adlex
+cp k8s/overlays/dev/secrets.env.example k8s/overlays/dev/secrets.env   # подставить ключ LLM
+kubectl apply -k k8s/overlays/dev
+kubectl wait --for=condition=complete job/adlex-migrate --timeout=180s
+curl localhost:8080/readyz    # {"db":"ok","redis":"ok"}
+```
+
+На Windows, если `kubectl` падает по таймауту на `host.docker.internal`:
+
+```bash
+kubectl config set-cluster k3d-adlex --server=https://127.0.0.1:$(docker port k3d-adlex-serverlb 6443/tcp | head -1 | cut -d: -f2)
+```
+
 ## Команды
 
 | Команда | Что делает |
@@ -59,7 +80,7 @@ src/adlex/
   agent/     граф LangGraph, узлы, инструменты
   guards/ workers/ observability/
 tests/       unit, integration, e2e
-corpus/ evals/ scripts/ docker/ mock_api/
+corpus/ evals/ scripts/ docker/ mock_api/ k8s/
 ```
 
 Зависимости слоёв направлены в одну сторону: `api → agent → rag / llm / db`.
@@ -70,4 +91,4 @@ corpus/ evals/ scripts/ docker/ mock_api/
 Проект в разработке. Готово: каркас сервиса, конфигурация, структурные логи с `request_id`,
 health-эндпоинты, окружение в Docker Compose, CI; схема данных (корпус, диалоги,
 наблюдаемость агента) с миграциями Alembic, GIN-индексом по русскому полнотексту
-и HNSW-индексом по эмбеддингам.
+и HNSW-индексом по эмбеддингам; развёртывание в Kubernetes (k3d): пробы, Job с миграциями, Kustomize.

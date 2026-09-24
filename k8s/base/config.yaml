@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: adlex-config
+data:
+  ADLEX_ENV: "dev"
+  ADLEX_REDIS_URL: "redis://redis:6379/0"
+  ADLEX_LLM_BASE_URL: "https://openrouter.ai/api/v1"
+  ADLEX_MODEL_MAIN: "qwen/qwen3.8-flash"
+  # Прокси живёт на хосте; k3d прописывает хост в DNS кластера под этим именем.
+  ADLEX_LLM_PROXY: "http://host.k3d.internal:10809"

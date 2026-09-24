@@ -12,3 +12,4 @@ body.json
 *.local.md
 CLAUDE.md
 docs/practicum.html
+k8s/overlays/dev/secrets.env

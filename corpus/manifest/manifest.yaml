@@ -1,0 +1,54 @@
+- act_code: 38-FZ                 # ключ в базе, латиницей
+  cite_as: 38-ФЗ                  # как акт выглядит в цитате
+  title: О рекламе
+  kind: law                       # law — режем по статьям, letter — по абзацам
+  file: 38-fz.html
+  revision: "ред. от 04.08.2026"
+  source_url: http://pravo.gov.ru/proxy/ips/?docbody=&nd=102105292
+  fetched_at: 2026-09-30
+
+- act_code: 152-FZ
+  cite_as: 152-ФЗ
+  title: О персональных данных
+  kind: law
+  file: 152-fz.html
+  revision: "ред. от 26.07.2026"
+  source_url: http://pravo.gov.ru/proxy/ips/?docbody=&nd=102108261
+  fetched_at: 2026-09-30
+
+- act_code: 353-FZ
+  cite_as: 353-ФЗ
+  title: О потребительском кредите (займе)
+  kind: law
+  file: 353-fz.html
+  revision: "ред. от 04.08.2026"
+  source_url: http://pravo.gov.ru/proxy/ips/?docbody=&nd=102170297
+  fetched_at: 2026-09-30
+
+- act_code: KOAP
+  cite_as: КоАП РФ
+  title: Кодекс Российской Федерации об административных правонарушениях
+  kind: law
+  file: koap-14-3.txt
+  excerpt: только ст. 14.3 и 14.3.1  # честно фиксируем, что взят не весь кодекс
+  revision: "ред. от 02.05.2026"
+  source_url: https://www.consultant.ru/document/cons_doc_LAW_34661/2d50fc1c4013ea9ab20b8b2666c1650b1dc4c982/
+  fetched_at: 2026-09-30
+
+- act_code: FAS-KT-85530-23
+  cite_as: Письмо ФАС России от 17.10.2023 № КТ/85530/23
+  title: О рекламе финансовых услуг
+  kind: letter
+  file: fas-kt-85530-23.txt
+  revision: "от 17.10.2023"
+  source_url: https://www.consultant.ru/document/cons_doc_LAW_459910/
+  fetched_at: 2026-09-30
+
+- act_code: FAS-KT-97146-23
+  cite_as: Письмо ФАС России от 20.11.2023 № КТ/97146/23
+  title: О рекламе финансовых услуг
+  kind: letter
+  file: fas-kt-97146-23.txt
+  revision: "от 20.11.2023"
+  source_url: https://www.consultant.ru/document/cons_doc_LAW_462709/
+  fetched_at: 2026-09-30

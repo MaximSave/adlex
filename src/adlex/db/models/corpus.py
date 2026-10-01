@@ -75,7 +75,7 @@ class Chunk(Base):
     # Структура метаданных у разных актов своя (глава, статья, часть, пункт),
     # поэтому JSONB, а не отдельные колонки.
     meta: Mapped[dict[str, Any]] = mapped_column(JSONB, default=dict)
-    embedding: Mapped[list[float]] = mapped_column(Vector(EMBEDDING_DIM))
+    embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
 
     document: Mapped[Document] = relationship(back_populates="chunks", lazy="raise")
 

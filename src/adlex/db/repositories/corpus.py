@@ -7,7 +7,7 @@
 import uuid
 from collections.abc import Sequence
 
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from adlex.db.models import Chunk, Document
@@ -43,3 +43,17 @@ async def get_chunks_by_document(session: AsyncSession, document_id: uuid.UUID) 
 async def count_chunks(session: AsyncSession) -> int:
     result = await session.execute(select(func.count()).select_from(Chunk))
     return result.scalar_one()
+
+
+async def delete_document(session: AsyncSession, act_code: str, revision: str) -> bool:
+    """Удалить редакцию акта вместе с чанками — перед повторной загрузкой исправленного файла.
+
+    Core-запрос, а не session.delete(obj): ORM-каскад полез бы загружать chunks,
+    а у связи lazy="raise". Чанки удалит сама база — ON DELETE CASCADE на внешнем ключе.
+    """
+    result = await session.execute(
+        delete(Document)
+        .where(Document.act_code == act_code, Document.revision == revision)
+        .returning(Document.id)
+    )
+    return result.scalar_one_or_none() is not None
